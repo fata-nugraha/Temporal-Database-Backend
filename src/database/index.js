@@ -27,9 +27,21 @@ async function findOne(query, options){
 }
 
 async function find(query, options){
-  return await exec((collection) => collection.find(query, options).limit(5));
+  return await exec((collection) => collection.find(query, options));
+}
+
+async function insertOne(query){
+  return await exec((collection) => collection.insertOne(query));
+}
+
+async function updateOne(id, set){
+  return await exec((collection) => collection.updateOne(id, set));
+}
+
+async function aggregate(firstStage, secondStage, thirdStage, fourthStage){
+  return await exec((collection) => collection.aggregate(firstStage, secondStage, thirdStage, fourthStage));
 }
 
 module.exports = {
-	findOne, find
+	findOne, find, insertOne, updateOne, aggregate
 }
