@@ -11,7 +11,6 @@ router.use('/api/test', async (req, res) => {
 	res.send(result)
 })
 
-
 router.use('/api/test2', async (req, res) => {
     const query = { babies: 0 };
     const options = {
