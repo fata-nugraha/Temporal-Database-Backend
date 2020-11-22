@@ -7,8 +7,10 @@ router.use('/api/test', async (req, res) => {
   const options = {
     sort: { checkin_date: -1 },
   };
-  result = await db.findOne(query, options);
-  res.send(result)
+  await db.exec(async (collection) => {
+    const result = await collection.findOne(query, options);
+    await res.send(result)
+  });
 })
 
 router.use('/api/test2', async (req, res) => {
@@ -16,9 +18,14 @@ router.use('/api/test2', async (req, res) => {
   const options = {
     sort: { checkin_date: -1 },
   };
-  result = await db.find(query, options);
-  res.send(result);
+  await db.exec(async (collection) => {
+    const cursor = await collection.find(query, options).limit(5);
+    result = [];
+    await cursor.forEach((data)=> result.push(data));
+    res.send(result);
+  });
 })
+/*
 
 // C R U D
 router.use('/api/find-all', async (req, res) => {
@@ -252,5 +259,5 @@ router.use('/api/equals', async (req, res) => {
   res.send(result);
 })
 
-
+*/
 module.exports = router
