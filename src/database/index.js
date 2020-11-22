@@ -38,10 +38,18 @@ async function updateOne(id, set){
   return await exec((collection) => collection.updateOne(id, set));
 }
 
+async function max(firstStage, secondStage, thirdStage, fourthStage){
+  return await exec((collection) => collection.aggregate(firstStage, secondStage, thirdStage, fourthStage).limit(1));
+}
+
 async function aggregate(firstStage, secondStage, thirdStage, fourthStage){
   return await exec((collection) => collection.aggregate(firstStage, secondStage, thirdStage, fourthStage));
 }
 
+async function preceed(firstStage, secondStage, thirdStage, fourthStage){
+  return await exec((collection) => collection.aggregate(firstStage, secondStage, thirdStage, fourthStage));
+}
+
 module.exports = {
-	findOne, find, insertOne, updateOne, aggregate
+	findOne, find, insertOne, updateOne, max, aggregate, preceed
 }
