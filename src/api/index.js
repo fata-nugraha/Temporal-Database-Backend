@@ -206,6 +206,33 @@ router.use('/api/met-by', async (req, res) => {
 
 // X mulai sama dengan Y (starts)
 
+router.use('/api/starts', async (req, res) => {
+  const query = { 
+    id: parseInt(req.query.id)
+  };
+
+  async function getElement(query){
+      let result = null
+      await db.exec(async (collection) =>{
+        result = await collection.findOne(query);
+      })
+      return result;
+  }  
+  
+  const item = await getElement(query);
+  await db.exec(async (collection) => {
+    const data_final = await collection.find({
+      checkin_date: {
+        $gt: item.checkin_date
+      },
+    }).limit(10);
+    result = [];
+    await data_final.forEach((data)=> result.push(data));
+    console.log(result);
+    res.send(result);
+  });  
+})
+
 // X saat Y (during - contains)
 
 // X berakhir sama dengan Y (ends - finished by)
@@ -260,4 +287,59 @@ router.use('/api/equals', async (req, res) => {
 })
 
 */
+// // Jofi
+// router.use('/api/ends', async (req, res) => {
+//   // Contoh querynya /api/end?id=10
+//   const query = { 
+//     id: parseInt(req.query.id)
+//   };
+
+//   async function getElement(query){
+//       let result = null
+//       await db.exec(async (collection) =>{
+//         result = await collection.findOne(query);
+//       })
+//       return result;
+//   }  
+  
+//   const item = await getElement(query);
+//   await db.exec(async (collection) => {
+//     const data_final = await collection.findOne({
+//       checkin_date: {
+//         $lt: item.checkin_date
+//       },
+//       checkout_date: item.checkout_date
+//     })
+//     console.log(data_final)
+//     res.send(data_final)
+//   });  
+// })
+
+// Jofi
+// router.use('/api/preceed', async (req, res) => {
+//   const query = { 
+//     id: parseInt(req.query.id)
+//   };
+
+//   async function getElement(query){
+//       let result = null
+//       await db.exec(async (collection) =>{
+//         result = await collection.findOne(query);
+//       })
+//       return result;
+//   }  
+  
+//   const item = await getElement(query);
+//   await db.exec(async (collection) => {
+//     const data_final = await collection.find({
+//       checkin_date: {
+//         $gt: item.checkout_date
+//       },
+//     }).limit(10);
+//     result = [];
+//     await data_final.forEach((data)=> result.push(data));
+//     console.log(result);
+//     res.send(result);
+//   });  
+// })
 module.exports = router
