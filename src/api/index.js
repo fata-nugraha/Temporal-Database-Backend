@@ -12,14 +12,49 @@ router.get('/api/test', async (req, res) => {
 
 // Allen's 13 queries
 
-// Start
+// Start (Find all X which starts with Y; Y is selected_visitor)
 router.get('/api/start', async (req, res) => {
   let id = req.query.id
   console.log('id: ', id)
   let query  = 
-      ` SELECT * FROM visitor WHERE checkin_date >= (
-        SELECT checkin_date from visitor WHERE id = $1
-      ) LIMIT 10`;
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+      WHERE visitor.checkin_date = selected_visitor.checkin_date LIMIT 10;`
+  const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
+  res.json(rows)
+})
+
+// Started by (Find all Y which started-by X; X is selected_visitor)
+router.get('/api/started-by', async (req, res) => {
+  let id = req.query.id
+  console.log('id: ', id)
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+        WHERE visitor.checkin_date = selected_visitor.checkin_date
+        AND selected_visitor.checkout_date < visitor.checkout_date LIMIT 10;`
+  const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
+  res.json(rows)
+})
+
+// Finish (Find all X which finish with Y; Y is selected_visitor)
+router.get('/api/finish', async (req, res) => {
+  let id = req.query.id
+  console.log('id: ', id)
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+      WHERE visitor.checkout_date = selected_visitor.checkin_date
+      AND selected_visitor.checkin_date > visitor.checkin_date LIMIT 10;`
+  const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
+  res.json(rows)
+})
+
+// Finished-by (Find all Y which finished-by X; X is selected_visitor)
+router.get('/api/finished-by', async (req, res) => {
+  let id = req.query.id
+  console.log('id: ', id)
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+      WHERE visitor.checkout_date = selected_visitor.checkout_date
+      AND selected_visitor.checkin_date < visitor.checkout_date LIMIT 10;`
   const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
   res.json(rows)
 })
