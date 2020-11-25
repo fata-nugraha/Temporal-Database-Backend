@@ -24,7 +24,7 @@ router.get('/api/start', async (req, res) => {
   res.json(rows)
 })
 
-// Contains
+// Contains (Find all X which contains Y; Y is selected_visitor)
 router.get('/api/contains', async (req, res) => {
   let id = req.query.id
   let query = `
@@ -39,7 +39,7 @@ router.get('/api/contains', async (req, res) => {
   res.json(rows)
 })
 
-// Overlaps
+// Overlaps (Find all X which overlaps Y; Y is selected_visitor)
 router.get('/api/overlaps', async (req, res) => {
   let id = req.query.id
   let query = `
