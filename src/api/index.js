@@ -39,8 +39,8 @@ router.get('/api/contains', async (req, res) => {
   res.json(rows)
 })
 
-// Overlapped By
-router.get('/api/overlapped-by', async (req, res) => {
+// Overlaps
+router.get('/api/overlaps', async (req, res) => {
   let id = req.query.id
   let query = `
       SELECT * FROM visitor, (
