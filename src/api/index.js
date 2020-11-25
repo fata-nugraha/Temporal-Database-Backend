@@ -12,11 +12,8 @@ router.get('/api/test', async (req, res) => {
 
 router.get('/api/start', async (req, res) => {
   let id = req.query.id
-  let query  = `select * from visitor where checkin_date >= (select checkin_date from visitor where id = $1) LIMIT 10`;
-  const { rows } = await db.query(query, [id], (error, result) => {
-    if (error) {
-      throw error
-    }
-  })
-  res.send(rows);
+  let query  = `select * from visitor where checkin_date >= (select checkin_date from visitor where id = $1)`;
+  db.query(query, [id])
+  .then(result => res.status(200).send(result.rows))
+  .catch(error => console.error(error.stack))
 })
