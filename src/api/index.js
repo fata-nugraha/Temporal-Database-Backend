@@ -7,13 +7,50 @@ router.get('/api/test', async (req, res) => {
   const query = 'SELECT * FROM visitor WHERE checkin_date<$1 LIMIT 10';
   const values = ['2016-01-01'];
   const { rows } = await db.query(query, values);
-  res.send(rows);
+  res.json({ data: rows });
 })
 
+// Allen's 13 queries
+
+// Start
 router.get('/api/start', async (req, res) => {
   let id = req.query.id
-  let query  = `select * from visitor where checkin_date >= (select checkin_date from visitor where id = $1)`;
-  db.query(query, [id])
-  .then(result => res.status(200).send(result.rows))
-  .catch(error => console.error(error.stack))
+  console.log('id: ', id)
+  let query  = 
+      ` SELECT * FROM visitor WHERE checkin_date >= (
+        SELECT checkin_date from visitor WHERE id = $1
+      ) LIMIT 10`;
+  const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
+  res.json(rows)
+})
+
+// Contains
+router.get('/api/contains', async (req, res) => {
+  let id = req.query.id
+  let query = `
+      SELECT * FROM visitor, (
+        SELECT * FROM visitor
+        WHERE id = $1
+      ) selected_visitor
+      WHERE visitor.checkin_date < selected_visitor.checkin_date
+      AND visitor.checkout_date > selected_visitor.checkout_date
+      LIMIT 10;`
+  const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
+  res.json(rows)
+})
+
+// Overlapped By
+router.get('/api/overlapped-by', async (req, res) => {
+  let id = req.query.id
+  let query = `
+      SELECT * FROM visitor, (
+        SELECT * FROM visitor
+        WHERE id = $1
+      ) selected_visitor
+      WHERE visitor.checkin_date < selected_visitor.checkin_date
+      AND visitor.checkin_date < selected_visitor.checkout_date
+      AND visitor.checkout_date > selected_visitor.checkout_date
+      LIMIT 10;`
+  const { rows } = await db.query(query, [id]).catch(error => console.error(error.stack))
+  res.json(rows)
 })
