@@ -18,10 +18,9 @@ router.get('/api/transaction-timeslice', queries.transactiontimeslice)
 // Returns transaction time (checkin_date is this case) and 1 chronon = 1 day
 router.get('/api/valid-timeslice', queries.validtimeslice)
 
-router.get('/api/insert', queries.insert)
-router.get('/api/update', queries.update)
-router.get('/api/delete', queries.delete)
-router.get('/api/modify', queries.modify)
+router.post('/api/insert', queries.insert)
+router.post('/api/modify', queries.modify)
+router.delete('/api/delete', queries.delete)
 
 
 // Allen's 13 queries

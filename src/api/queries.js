@@ -1,9 +1,7 @@
 const db = require('../database')
 
 exports.project = async (req, res) => {
-  //columns : name, parent, babies etc
-  const columns = req.query.columns
-  const query  = (` SELECT ${columns}, checkin_date, checkout_date FROM visitor`);
+  const query  = `SELECT id, name, adults, checkin_date, checkout_date FROM visitor`;
   const { rows } = await db.query(query).catch(e => console.error(e.stack))
   res.json(rows)
 }
@@ -25,10 +23,28 @@ exports.union = async (req, res) => {
 }
 
 exports.modify = async (req, res) => {
-  const id = req.query.id
+  const values = [
+    req.body.id,
+    req.body.hotel,
+    req.body.adults,
+    req.body.children,
+    req.body.babies,
+    req.body.checkin_date,
+    req.body.checkout_date,
+    req.body.name,
+  ]
   const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+      ` UPDATE visitor SET 
+        hotel = $2,
+        adults = $3,
+        children = $4,
+        babies = $5,
+        checkin_date = $6,
+        checkout_date = $7,
+        name = $8
+        WHERE id = $1
+      `
+  const { rows } = await db.query(query, values).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
@@ -38,14 +54,6 @@ exports.tempdiff = async (req, res) => {
   const query  = 
       ` SELECT checkin_date, checkout_date FROM visitor WHERE name = $1 EXCEPT SELECT checkin_date, checkout_date FROM manager `
   const { rows } = await db.query(query, [name]).catch(e => console.error(e.stack))
-  res.json(rows)
-}
-
-exports.select = async (req, res) => {
-  const id = req.query.id
-  const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
@@ -121,17 +129,19 @@ exports.validtimeslice = async (req, res) => {
 }
 
 exports.insert = async (req, res) => {
-  const id = req.query.id
+  const values = [
+    req.body.hotel,
+    req.body.adults,
+    req.body.children,
+    req.body.babies,
+    req.body.checkin_date,
+    req.body.checkout_date,
+    req.body.name,
+  ]
   const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
-  res.json(rows)
-}
-
-exports.update = async (req, res) => {
-  const id = req.query.id
-  const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
+      ` INSERT INTO visitor
+      (hotel, adults, children, babies, checkin_date, checkout_date, name)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
@@ -139,7 +149,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   const id = req.query.id
   const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
+      ` DELETE FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
