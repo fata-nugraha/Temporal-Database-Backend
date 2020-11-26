@@ -17,17 +17,28 @@ exports.select = async (req, res) => {
 exports.union = async (req, res) => {
   const id = req.query.id
   const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
+      ` SELECT * FROM manager WHERE name = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
-//waktu dimana orang tersebut checkin tapi gaada manager yang jaga di waktu tersebut
+
+//to show temporal difference between two id
 exports.tempdiff = async (req, res) => {
-  const name = req.query.name
+  const id = req.query.id
+  const secondId  = req.query.secondId;
+  
   const query  = 
-      ` SELECT checkin_date, checkout_date FROM visitor WHERE name = $1 EXCEPT SELECT checkin_date, checkout_date FROM manager `
-  const { rows } = await db.query(query, [name]).catch(e => console.error(e.stack))
+      ` 
+      SELECT DATE(visitor.checkin_date) + d.date + 1 AS time
+      FROM visitor, generate_series(0, DATE_PART('day',visitor.checkout_date-visitor.checkin_date)::int) as d(date), 
+      (
+        SELECT checkin_date, checkout_date
+        FROM visitor
+        WHERE id = $2
+      ) as secondVisitor
+     WHERE id = $1 AND DATE(visitor.checkin_date) + d.date NOT BETWEEN secondVisitor.checkin_date::date AND secondVisitor.checkout_date::date`
+  const { rows } = await db.query(query, [id, secondId]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
