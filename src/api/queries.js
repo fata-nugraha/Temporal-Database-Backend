@@ -39,7 +39,7 @@ exports.tempjoin = async ({}, res) => {
          (SELECT
             visitor.id, visitor.hotel, visitor.adults, visitor.children,
             visitor.babies, manager.checkin_date "checkin_date", visitor.checkout_date "checkout_date",
-            visitor.is_canceled, deleted_at, visitor."name", manager_id, manager."name"
+            visitor."name", manager_id, manager."name"
          FROM visitor, manager
          WHERE visitor.checkin_date <= manager.checkin_date
          AND visitor.checkout_date <= manager.checkout_date
@@ -49,7 +49,7 @@ exports.tempjoin = async ({}, res) => {
          (SELECT
             visitor.id, visitor.hotel, visitor.adults, visitor.children,
             visitor.babies, visitor.checkin_date "checkin_date", manager.checkout_date "checkout_date",
-            visitor.is_canceled, deleted_at, visitor."name", manager_id, manager."name"
+            visitor."name", manager_id, manager."name"
          FROM visitor, manager
          WHERE visitor.checkin_date >= manager.checkin_date
          AND visitor.checkout_date >= manager.checkout_date
@@ -61,39 +61,11 @@ exports.tempjoin = async ({}, res) => {
   res.json(rows)
 }
 
-exports.transactiontimeslice = async (req, res) => {
-  const time = req.query.time
-  const query  = 
-    ` SELECT
-        visitor.id, hotel, adults, children, babies, is_canceled, "name",
-        array_agg(generatedtimes ORDER BY generatedtimes) valid_times
-      FROM (
-        SELECT 
-          selected_visitor.id, 
-          generate_series(
-            selected_visitor.checkin_date,
-            selected_visitor.checkout_date,
-            '1 day'::interval
-          ) generatedtimes 
-        FROM (
-          SELECT *
-          FROM visitor
-          WHERE checkin_date = $1
-        ) selected_visitor
-      ) selected_visitor_timeseries
-      JOIN visitor ON selected_visitor_timeseries.id = visitor.id
-      GROUP BY visitor.id
-      LIMIT 10`
-  const { rows } = await db.query(query, [time]).catch(e => console.error(e.stack))
-  res.json(rows)
-}
-
 exports.validtimeslice = async (req, res) => {
   const time = req.query.time
   const query  = 
       ` SELECT 
-          visitor.id, hotel, adults, children, babies, is_canceled, "name",
-          checkin_date as transaction_time
+          visitor.id, hotel, adults, children, babies, "name"
         FROM visitor
         WHERE $1 >= checkin_date
         AND $1 <= checkout_date

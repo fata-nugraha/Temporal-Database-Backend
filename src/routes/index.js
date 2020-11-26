@@ -12,10 +12,7 @@ router.get('/api/tempdiff', queries.tempdiff)
 // Join on overlapping valid times
 router.get('/api/tempjoin', queries.tempjoin)
 
-// Assuming transaction time = checkin_date and 1 chronon = 1 day
-router.get('/api/transaction-timeslice', queries.transactiontimeslice)
-
-// Returns transaction time (checkin_date is this case) and 1 chronon = 1 day
+// Returns relation without temporal attribute
 router.get('/api/valid-timeslice', queries.validtimeslice)
 
 router.post('/api/insert', queries.insert)
