@@ -49,11 +49,33 @@ exports.select = async (req, res) => {
   res.json(rows)
 }
 
-exports.tempjoin = async (req, res) => {
-  const id = req.query.id
+exports.tempjoin = async ({}, res) => {
   const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+      `
+      SELECT *
+      FROM (
+         (SELECT
+            visitor.id, visitor.hotel, visitor.adults, visitor.children,
+            visitor.babies, manager.checkin_date "checkin_date", visitor.checkout_date "checkout_date",
+            visitor.is_canceled, deleted_at, visitor."name", manager_id, manager."name"
+         FROM visitor, manager
+         WHERE visitor.checkin_date <= manager.checkin_date
+         AND visitor.checkout_date <= manager.checkout_date
+         AND visitor.checkout_date >= manager.checkin_date
+         LIMIT 10)
+         UNION
+         (SELECT
+            visitor.id, visitor.hotel, visitor.adults, visitor.children,
+            visitor.babies, visitor.checkin_date "checkin_date", manager.checkout_date "checkout_date",
+            visitor.is_canceled, deleted_at, visitor."name", manager_id, manager."name"
+         FROM visitor, manager
+         WHERE visitor.checkin_date >= manager.checkin_date
+         AND visitor.checkout_date >= manager.checkout_date
+         AND manager.checkout_date >= visitor.checkin_date
+         LIMIT 10)
+      ) joinedtables
+      LIMIT 10`
+  const { rows } = await db.query(query).catch(e => console.error(e.stack))
   res.json(rows)
 }
 

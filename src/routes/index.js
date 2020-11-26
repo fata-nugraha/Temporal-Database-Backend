@@ -8,6 +8,8 @@ router.get('/api/project', queries.project)
 router.get('/api/select', queries.select)
 router.get('/api/union', queries.union)
 router.get('/api/tempdiff', queries.tempdiff)
+
+// Join on overlapping valid times
 router.get('/api/tempjoin', queries.tempjoin)
 
 // Assuming transaction time = checkin_date and 1 chronon = 1 day
