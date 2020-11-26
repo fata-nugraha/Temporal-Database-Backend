@@ -9,8 +9,13 @@ router.get('/api/select', queries.select)
 router.get('/api/union', queries.union)
 router.get('/api/tempdiff', queries.tempdiff)
 router.get('/api/tempjoin', queries.tempjoin)
+
+// Assuming transaction time = checkin_date and 1 chronon = 1 day
 router.get('/api/transaction-timeslice', queries.transactiontimeslice)
+
+// Returns transaction time (checkin_date is this case) and 1 chronon = 1 day
 router.get('/api/valid-timeslice', queries.validtimeslice)
+
 router.get('/api/insert', queries.insert)
 router.get('/api/update', queries.update)
 router.get('/api/delete', queries.delete)

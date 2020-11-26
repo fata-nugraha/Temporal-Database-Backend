@@ -62,7 +62,7 @@ exports.transactiontimeslice = async (req, res) => {
   let query  = 
     ` SELECT
         visitor.id, hotel, adults, children, babies, is_canceled, "name",
-        array_agg(generatedtimes ORDER BY generatedtimes) timeseries
+        array_agg(generatedtimes ORDER BY generatedtimes) valid_times
       FROM (
         SELECT 
           selected_visitor.id, 
@@ -87,8 +87,14 @@ exports.transactiontimeslice = async (req, res) => {
 exports.validtimeslice = async (req, res) => {
   let time = req.query.time
   let query  = 
-      ` SELECT * FROM visitor WHERE checkin_date = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+      ` SELECT 
+          visitor.id, hotel, adults, children, babies, is_canceled, "name",
+          checkin_date as transaction_time
+        FROM visitor
+        WHERE $1 >= checkin_date
+        AND $1 <= checkout_date
+        LIMIT 10`
+  const { rows } = await db.query(query, [time]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
