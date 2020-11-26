@@ -2,31 +2,31 @@ const db = require('../database')
 
 exports.project = async (req, res) => {
   //columns : name, parent, babies etc
-  let columns = req.query.columns
-  let query  = (` SELECT ${columns}, checkin_date, checkout_date FROM visitor`);
+  const columns = req.query.columns
+  const query  = (` SELECT ${columns}, checkin_date, checkout_date FROM visitor`);
   const { rows } = await db.query(query).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.select = async (req, res) => {
-  let id = req.query.id 
-  let query  = 
+  const id = req.query.id 
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.union = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.modify = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
@@ -34,32 +34,32 @@ exports.modify = async (req, res) => {
 
 //waktu dimana orang tersebut checkin tapi gaada manager yang jaga di waktu tersebut
 exports.tempdiff = async (req, res) => {
-  let name = req.query.name
-  let query  = 
+  const name = req.query.name
+  const query  = 
       ` SELECT checkin_date, checkout_date FROM visitor WHERE name = $1 EXCEPT SELECT checkin_date, checkout_date FROM manager `
   const { rows } = await db.query(query, [name]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.select = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.tempjoin = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.transactiontimeslice = async (req, res) => {
-  let time = req.query.time
-  let query  = 
+  const time = req.query.time
+  const query  = 
     ` SELECT
         visitor.id, hotel, adults, children, babies, is_canceled, "name",
         array_agg(generatedtimes ORDER BY generatedtimes) valid_times
@@ -85,8 +85,8 @@ exports.transactiontimeslice = async (req, res) => {
 }
 
 exports.validtimeslice = async (req, res) => {
-  let time = req.query.time
-  let query  = 
+  const time = req.query.time
+  const query  = 
       ` SELECT 
           visitor.id, hotel, adults, children, babies, is_canceled, "name",
           checkin_date as transaction_time
@@ -99,24 +99,24 @@ exports.validtimeslice = async (req, res) => {
 }
 
 exports.insert = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.update = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.delete = async (req, res) => {
-  let id = req.query.id
-  let query  = 
+  const id = req.query.id
+  const query  = 
       ` SELECT * FROM visitor WHERE id = $1`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)

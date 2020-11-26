@@ -19,7 +19,7 @@ router.get('/api/valid-timeslice', queries.validtimeslice)
 router.get('/api/insert', queries.insert)
 router.get('/api/update', queries.update)
 router.get('/api/delete', queries.delete)
-// router.get('/api/modify', queries.modify)
+router.get('/api/modify', queries.modify)
 
 
 // Allen's 13 queries
