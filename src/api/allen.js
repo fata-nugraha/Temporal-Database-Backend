@@ -67,3 +67,59 @@ exports.overlaps = async (req, res) => {
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
+
+exports.before = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.after = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.meets = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.met_by = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.overlapped_by = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.during = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.equals = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor WHERE id = $1`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
