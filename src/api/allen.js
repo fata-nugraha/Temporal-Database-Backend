@@ -71,16 +71,26 @@ exports.overlaps = async (req, res) => {
 
 exports.before = async (req, res) => {
   const id = req.query.id
-  const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
+  const query  = `
+    SELECT visitor.* FROM visitor, (
+      SELECT * FROM visitor
+      WHERE id = $1
+    ) selected_visitor
+    WHERE selected_visitor.checkout_date < visitor.checkin_date
+    LIMIT 10`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
 exports.after = async (req, res) => {
   const id = req.query.id
-  const query  = 
-      ` SELECT * FROM visitor WHERE id = $1`
+  const query  = `
+    SELECT visitor.* FROM visitor, (
+      SELECT * FROM visitor
+      WHERE id = $1
+    ) selected_visitor
+    WHERE visitor.checkout_date < selected_visitor.checkin_date
+    LIMIT 10`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
