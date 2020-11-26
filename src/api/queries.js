@@ -22,32 +22,6 @@ exports.union = async (req, res) => {
   res.json(rows)
 }
 
-exports.modify = async (req, res) => {
-  const values = [
-    req.body.id,
-    req.body.hotel,
-    req.body.adults,
-    req.body.children,
-    req.body.babies,
-    req.body.checkin_date,
-    req.body.checkout_date,
-    req.body.name,
-  ]
-  const query  = 
-      ` UPDATE visitor SET 
-        hotel = $2,
-        adults = $3,
-        children = $4,
-        babies = $5,
-        checkin_date = $6,
-        checkout_date = $7,
-        name = $8
-        WHERE id = $1
-      `
-  const { rows } = await db.query(query, values).catch(e => console.error(e.stack))
-  res.json(rows)
-}
-
 //waktu dimana orang tersebut checkin tapi gaada manager yang jaga di waktu tersebut
 exports.tempdiff = async (req, res) => {
   const name = req.query.name
@@ -143,6 +117,32 @@ exports.insert = async (req, res) => {
       (hotel, adults, children, babies, checkin_date, checkout_date, name)
       VALUES ($1, $2, $3, $4, $5, $6, $7)`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.modify = async (req, res) => {
+  const values = [
+    req.body.id,
+    req.body.hotel,
+    req.body.adults,
+    req.body.children,
+    req.body.babies,
+    req.body.checkin_date,
+    req.body.checkout_date,
+    req.body.name,
+  ]
+  const query  = 
+      ` UPDATE visitor SET 
+        hotel = $2,
+        adults = $3,
+        children = $4,
+        babies = $5,
+        checkin_date = $6,
+        checkout_date = $7,
+        name = $8
+        WHERE id = $1
+      `
+  const { rows } = await db.query(query, values).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
