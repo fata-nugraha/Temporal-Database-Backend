@@ -46,10 +46,10 @@ router.get('/api/after', allen.after)
 router.get('/api/meets', allen.meets)
 
 // Met by (Find all X which met by Y; Y is selected_visitor)
-router.get('/api/met_by', allen.met_by)
+router.get('/api/met-by', allen.met_by)
 
 // Overlapped by (Find all X which overlapped by Y; Y is selected_visitor)
-router.get('/api/overlapped_by', allen.overlapped_by)
+router.get('/api/overlapped-by', allen.overlapped_by)
 
 // During (Find all X which during Y; Y is selected_visitor)
 router.get('/api/during', allen.during)
