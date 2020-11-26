@@ -39,7 +39,7 @@ exports.tempjoin = async ({}, res) => {
          (SELECT
             visitor.id, visitor.hotel, visitor.adults, visitor.children,
             visitor.babies, manager.checkin_date "checkin_date", visitor.checkout_date "checkout_date",
-            visitor."name", manager_id, manager."name"
+            visitor."name" visitor_name, manager_id, manager."name" manager_name
          FROM visitor, manager
          WHERE visitor.checkin_date <= manager.checkin_date
          AND visitor.checkout_date <= manager.checkout_date
@@ -49,7 +49,7 @@ exports.tempjoin = async ({}, res) => {
          (SELECT
             visitor.id, visitor.hotel, visitor.adults, visitor.children,
             visitor.babies, visitor.checkin_date "checkin_date", manager.checkout_date "checkout_date",
-            visitor."name", manager_id, manager."name"
+            visitor."name" visitor_name, manager_id, manager."name" manager_name
          FROM visitor, manager
          WHERE visitor.checkin_date >= manager.checkin_date
          AND visitor.checkout_date >= manager.checkout_date
@@ -88,8 +88,10 @@ exports.insert = async (req, res) => {
       ` INSERT INTO visitor
       (hotel, adults, children, babies, checkin_date, checkout_date, name)
       VALUES ($1, $2, $3, $4, $5, $6, $7)`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
-  res.json(rows)
+  await db.query(query, values).catch(e => console.error(e.stack))
+  res.status(200).json({
+    message: "OK"
+  })
 }
 
 exports.modify = async (req, res) => {
@@ -114,14 +116,18 @@ exports.modify = async (req, res) => {
         name = $8
         WHERE id = $1
       `
-  const { rows } = await db.query(query, values).catch(e => console.error(e.stack))
-  res.json(rows)
+  await db.query(query, values).catch(e => console.error(e.stack))
+  res.status(200).json({
+    message: "OK"
+  })
 }
 
 exports.delete = async (req, res) => {
   const id = req.query.id
   const query  = 
       ` DELETE FROM visitor WHERE id = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
-  res.json(rows)
+  await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.status(200).json({
+    message: "OK"
+  })
 }
