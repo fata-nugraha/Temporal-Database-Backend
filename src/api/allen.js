@@ -1,0 +1,69 @@
+const db = require('../database')
+
+exports.start = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+      WHERE visitor.checkin_date = selected_visitor.checkin_date LIMIT 10`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.started_by = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+        WHERE visitor.checkin_date = selected_visitor.checkin_date
+        AND selected_visitor.checkout_date < visitor.checkout_date LIMIT 10`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.finish = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+      WHERE visitor.checkout_date = selected_visitor.checkin_date
+      AND selected_visitor.checkin_date > visitor.checkin_date LIMIT 10`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.finished_by = async (req, res) => {
+  let id = req.query.id
+  let query  = 
+      ` SELECT * FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
+      WHERE visitor.checkout_date = selected_visitor.checkout_date
+      AND selected_visitor.checkin_date < visitor.checkout_date LIMIT 10`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.contains = async (req, res) => {
+  let id = req.query.id
+  let query = `
+      SELECT * FROM visitor, (
+        SELECT * FROM visitor
+        WHERE id = $1
+      ) selected_visitor
+      WHERE visitor.checkin_date < selected_visitor.checkin_date
+      AND visitor.checkout_date > selected_visitor.checkout_date
+      LIMIT 10`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
+
+exports.overlaps = async (req, res) => {
+  let id = req.query.id
+  let query = `
+      SELECT * FROM visitor, (
+        SELECT * FROM visitor
+        WHERE id = $1
+      ) selected_visitor
+      WHERE visitor.checkin_date < selected_visitor.checkin_date
+      AND visitor.checkin_date < selected_visitor.checkout_date
+      AND visitor.checkout_date > selected_visitor.checkout_date
+      LIMIT 10`
+  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  res.json(rows)
+}
