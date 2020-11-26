@@ -9,11 +9,12 @@ router.get('/api/select', queries.select)
 router.get('/api/union', queries.union)
 router.get('/api/tempdiff', queries.tempdiff)
 router.get('/api/tempjoin', queries.tempjoin)
-router.get('/api/timeslice', queries.timeslice)
+router.get('/api/transaction-timeslice', queries.transactiontimeslice)
+router.get('/api/valid-timeslice', queries.validtimeslice)
 router.get('/api/insert', queries.insert)
 router.get('/api/update', queries.update)
 router.get('/api/delete', queries.delete)
-router.get('/api/modify', queries.modify)
+// router.get('/api/modify', queries.modify)
 
 
 // Allen's 13 queries
