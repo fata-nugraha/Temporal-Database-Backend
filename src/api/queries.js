@@ -15,10 +15,10 @@ exports.select = async (req, res) => {
 }
 
 exports.union = async (req, res) => {
-  const id1 = req.query.id1
-  const id2 = req.query.id2
+  const id1 = req.query.id;
+  const id2 = req.query.secondId;
   const query  = 
-      ` WITH id1 as (select $1 var), id2 as (select $2 var)
+      ` WITH id1 as (select $1::int var), id2 as (select $2::int var)
 SELECT visitor."name", visitor.checkin_date, visitor.checkout_date FROM visitor, 
 (SELECT * FROM visitor WHERE id in (SELECT * FROM id1)) r2
 WHERE visitor.id in (SELECT * FROM id2) and visitor.checkin_date < r2.checkin_date and visitor.checkout_date > r2.checkout_date and visitor."name" = r2."name"
@@ -58,8 +58,8 @@ UNION
 SELECT visitor."name", visitor.checkin_date, visitor.checkout_date FROM visitor, 
 (SELECT * FROM visitor WHERE id in (SELECT * FROM id2)) r2
 WHERE visitor.id in (SELECT * FROM id1) and visitor."name" != r2."name"`
-  const { rows } = await db.query(query, [id1, id2]).catch(e => console.error(e.stack))
-  res.json(rows)
+  const { rows } = await db.query(query, [id1, id2]).catch(e => console.error(e.stack));
+  res.json(rows);
 }
 
 
