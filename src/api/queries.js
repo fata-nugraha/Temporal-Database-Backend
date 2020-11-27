@@ -30,14 +30,14 @@ exports.tempdiff = async (req, res) => {
   
   const query  = 
       ` 
-      SELECT DATE(visitor.checkin_date) + d.date + 1 AS time
+      SELECT visitor.name, DATE(visitor.checkin_date) + d.date + 1 AS time
       FROM visitor, generate_series(0, DATE_PART('day',visitor.checkout_date-visitor.checkin_date)::int) as d(date), 
       (
-        SELECT checkin_date, checkout_date
+        SELECT name, checkin_date, checkout_date
         FROM visitor
         WHERE id = $2
       ) as secondVisitor
-     WHERE id = $1 AND DATE(visitor.checkin_date) + d.date NOT BETWEEN secondVisitor.checkin_date::date AND secondVisitor.checkout_date::date`
+     WHERE id = $1 AND ((visitor.name != secondVisitor.name) OR DATE(visitor.checkin_date) + d.date NOT BETWEEN secondVisitor.checkin_date::date AND secondVisitor.checkout_date::date)`
   const { rows } = await db.query(query, [id, secondId]).catch(e => console.error(e.stack))
   res.json(rows)
 }
