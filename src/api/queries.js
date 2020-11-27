@@ -1,7 +1,7 @@
 const db = require('../database')
 
 exports.project = async (req, res) => {
-  const query  = `SELECT id, name, adults, checkin_date, checkout_date FROM visitor`;
+  const query  = `SELECT id, name, adults, checkin_date, checkout_date FROM visitor LIMIT 10`;
   const { rows } = await db.query(query).catch(e => console.error(e.stack))
   res.json(rows)
 }
