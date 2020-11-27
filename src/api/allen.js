@@ -124,7 +124,8 @@ exports.met_by = async (req, res) => {
 exports.overlapped_by = async (req, res) => {
   const id = req.query.id
   const query  = 
-      `  SELECT * FROM visitor
+    ` SELECT visitor.* FROM visitor, (
+      SELECT * FROM visitor
       WHERE id = $1
     ) selected_visitor
     WHERE visitor.checkin_date > selected_visitor.checkin_date
@@ -156,7 +157,7 @@ exports.equals = async (req, res) => {
       FROM (SELECT checkin_date, checkout_date FROM visitor WHERE id = $1) AS visitorA, visitor 
       WHERE visitor.checkin_date = visitorA.checkin_date 
       AND visitor.checkout_date = visitorA.checkout_date 
-      AND id != $1`
+      AND id != $1 LIMIT 10`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
