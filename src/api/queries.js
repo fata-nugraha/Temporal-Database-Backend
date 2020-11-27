@@ -1,7 +1,7 @@
 const db = require('../database')
 
 exports.project = async (req, res) => {
-  const query  = `SELECT id, name, adults, checkin_date, checkout_date FROM visitor`;
+  const query  = `SELECT id, name, adults, checkin_date, checkout_date FROM visitor LIMIT 10`;
   const { rows } = await db.query(query).catch(e => console.error(e.stack))
   res.json(rows)
 }
@@ -15,10 +15,11 @@ exports.select = async (req, res) => {
 }
 
 exports.union = async (req, res) => {
-  const id = req.query.id
+  const id1 = req.query.id1
+  const id2 = req.query.id2
   const query  = 
       ` SELECT * FROM manager WHERE name = $1`
-  const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
+  const { rows } = await db.query(query, [id1, id2]).catch(e => console.error(e.stack))
   res.json(rows)
 }
 
