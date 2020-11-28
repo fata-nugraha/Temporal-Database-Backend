@@ -24,7 +24,7 @@ exports.finish = async (req, res) => {
   const id = req.query.id
   const query  = 
       ` SELECT visitor.* FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
-      WHERE visitor.checkout_date = selected_visitor.checkin_date
+      WHERE visitor.checkout_date = selected_visitor.checkout_date
       AND selected_visitor.checkin_date > visitor.checkin_date LIMIT 10`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
@@ -35,7 +35,7 @@ exports.finished_by = async (req, res) => {
   const query  = 
       ` SELECT visitor.* FROM visitor, (SELECT * from visitor where id = $1) as selected_visitor
       WHERE visitor.checkout_date = selected_visitor.checkout_date
-      AND selected_visitor.checkin_date < visitor.checkout_date LIMIT 10`
+      AND selected_visitor.checkin_date < visitor.checkin_date LIMIT 10`
   const { rows } = await db.query(query, [id]).catch(e => console.error(e.stack))
   res.json(rows)
 }
